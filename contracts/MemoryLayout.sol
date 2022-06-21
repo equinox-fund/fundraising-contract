@@ -68,4 +68,9 @@ contract MemoryLayout is Ownable {
      */
 
     uint8[] public poolIds;
+
+    /**
+     * Whitelist (poolId > address > number of tickets)
+     */
+    mapping(uint8 => mapping(address => uint8)) public whitelist;
 }

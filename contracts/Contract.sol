@@ -15,9 +15,6 @@ contract Contract is MemoryLayout {
         address _withdrawFundsAddress,
         uint8 _vestingRatioPercentage
     ) {
-        require(_withdrawFundsAddress != address(0), "Cannot set address 0x0");
-        require(_paymentToken != address(0), "Cannot set address 0x0");
-
         paymentToken = _paymentToken;
         projectToken = _projectToken;
         vestingRatioPercentage = _vestingRatioPercentage;
@@ -27,14 +24,12 @@ contract Contract is MemoryLayout {
     /// @notice Set project token address
     /// @dev Use this only if the decimals is the same as the initial initialize
     function setProjectTokenAddress(address _projectToken) external onlyOwner {
-        require(_projectToken != address(0), "Cannot set address 0x0");
         projectToken = _projectToken;
     }
 
     /// @notice Set payment token address
     /// @dev Use this only if the decimals is the same as the initial initialize
     function setPaymentTokenAddress(address _paymentToken) external onlyOwner {
-        require(_paymentToken != address(0), "Cannot set address 0x0");
         paymentToken = _paymentToken;
     }
 

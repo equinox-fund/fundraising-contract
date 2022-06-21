@@ -2,24 +2,6 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 
 describe("Tests Contract.sol", () => {
-  it("Should fail if address 0x0 are provided", async () => {
-    const Contract = await ethers.getContractFactory("Contract");
-
-    const paymentToken = "0x0000000000000000000000000000000000000000";
-    const projectToken = "0x0000000000000000000000000000000000000000";
-    const withdrawFundsAddress = "0x0000000000000000000000000000000000000000";
-    const vestingRatioPercentage = 0;
-
-    const contract = Contract.deploy(
-      paymentToken,
-      projectToken,
-      withdrawFundsAddress,
-      vestingRatioPercentage
-    );
-
-    await expect(contract).to.be.revertedWith("Cannot set address 0x0");
-  });
-
   it("Should be able to deploy and set initial values", async () => {
     const Contract = await ethers.getContractFactory("Contract");
 
@@ -37,6 +19,10 @@ describe("Tests Contract.sol", () => {
 
     expect(await contract.vestingRatioPercentage()).to.equals(20);
     expect(await contract.paymentToken()).to.equals(paymentToken);
+    expect(await contract.projectToken()).to.equals(projectToken);
+    expect(await contract.withdrawFundsAddress()).to.equals(
+      withdrawFundsAddress
+    );
   });
 
   it("Should be able to update projectToken and paymentToken", async () => {

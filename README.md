@@ -1,6 +1,6 @@
 # Fundrising contract
 
-This is our fund raising contract , heart of our launchpad ! 
+This is our fund raising contract , heart of our launchpad !
 
 Try running some of the following tasks:
 

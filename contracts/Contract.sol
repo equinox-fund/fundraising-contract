@@ -1,7 +1,8 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.15;
-import "./MemoryLayout.sol";
+
 import "./Pool.sol";
+import "./MemoryLayout.sol";
 
 contract Contract is MemoryLayout, Pool {
     /// @notice Initialize fundraising contract
@@ -14,24 +15,12 @@ contract Contract is MemoryLayout, Pool {
         address _paymentToken,
         address _projectToken,
         address _withdrawFundsAddress,
-        uint8 _vestingRatioPercentage
+        uint256 _vestingRatioPercentage
     ) {
         paymentToken = _paymentToken;
         projectToken = _projectToken;
         vestingRatioPercentage = _vestingRatioPercentage;
         withdrawFundsAddress = _withdrawFundsAddress;
-    }
-
-    /// @notice Set project token address
-    /// @dev Use this only if the decimals is the same as the initial initialize
-    function setProjectTokenAddress(address _projectToken) external onlyOwner {
-        projectToken = _projectToken;
-    }
-
-    /// @notice Set payment token address
-    /// @dev Use this only if the decimals is the same as the initial initialize
-    function setPaymentTokenAddress(address _paymentToken) external onlyOwner {
-        paymentToken = _paymentToken;
     }
 
     fallback() external {

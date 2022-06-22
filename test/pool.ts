@@ -14,14 +14,20 @@ import { toBigNumber } from "./helpers";
 
 describe("Tests Pool.sol", () => {
   let contract: Contract;
+  let sampleERC20: Contract;
   let owner: SignerWithAddress;
 
   // deploy contract
   before(async () => {
+    // we need set a token address and deploy a ERC20 sample
+    // deploy, assuming 18 decimals
+    const factory = await ethers.getContractFactory("SampleERC20");
+    sampleERC20 = await factory.deploy(18);
+
     const Contract = await ethers.getContractFactory("Contract");
     [owner] = await ethers.getSigners();
     const paymentToken = "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56";
-    const projectToken = "0x0000000000000000000000000000000000000000";
+    const projectToken = sampleERC20.address;
     const withdrawFundsAddress = "0x70A78123250635DD66b081D029B5e65F8c5EDB42";
     const vestingRatioPercentage = 20;
 
@@ -31,6 +37,9 @@ describe("Tests Pool.sol", () => {
       withdrawFundsAddress,
       vestingRatioPercentage
     );
+
+    // mint 10000 to the contract
+    await sampleERC20.mintToWallet(contract.address, toBigNumber(10000));
   });
 
   describe("Initialization", () => {
@@ -103,33 +112,17 @@ describe("Tests Pool.sol", () => {
   });
 
   describe("Allow Redeem", () => {
-    it("Should not be able to allow redeem", async () => {
+    it("Should be able to allow redeem", async () => {
       const poolId = 1;
 
-      const allowing = contract.connect(owner).allowPoolRedeem(poolId);
-      await expect(allowing).to.revertedWith("No Project Token address");
+      await contract.connect(owner).allowPoolRedeem(poolId);
+      expect((await contract.pools(poolId)).canRedeem).to.equals(true);
     });
   });
 
   describe("Withraw unsold", () => {
-    it("Should not be able to withdraw unsold tokens", async () => {
-      const poolId = 1;
-
-      const allowing = contract.connect(owner).allowPoolRedeem(poolId);
-      await expect(allowing).to.revertedWith("No Project Token address");
-    });
-
     it("Should be able to withdraw unsold tokens", async () => {
       const poolId = 1;
-
-      // we need set a token address and deploy a ERC20 sample
-      // deploy, assuming 18 decimals
-      const factory = await ethers.getContractFactory("SampleERC20");
-      const sampleERC20 = await factory.deploy(18);
-      // mint 10000 to the contract
-      await sampleERC20.mintToWallet(contract.address, toBigNumber(10000));
-      // set token address for contract
-      await contract.connect(owner).setProjectTokenAddress(sampleERC20.address);
 
       // withdraw
       await contract.connect(owner).withdrawPoolUnsoldProjectToken(poolId);

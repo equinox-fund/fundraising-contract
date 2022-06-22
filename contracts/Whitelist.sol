@@ -3,6 +3,11 @@ pragma solidity 0.8.15;
 import "./MemoryLayout.sol";
 
 contract Whitelist is MemoryLayout {
+    /**
+     * Whitelist (poolId > address > number of tickets)
+     */
+    mapping(uint8 => mapping(address => uint8)) public whitelist;
+
     /// @notice Whitelist a bunch of address into a "Virtual Pool"
     /// @dev if the address is already whitelisted, we top-up numbers of tickets.
     /// @param _addrs Array of addresses
@@ -14,11 +19,7 @@ contract Whitelist is MemoryLayout {
         uint8 _poolId
     ) external onlyOwner {
         for (uint256 i = 0; i < _addrs.length; i++) {
-            if (whitelist[_poolId][_addrs[i]] > 0) {
-                whitelist[_poolId][_addrs[i]] += _tickets;
-            } else {
-                whitelist[_poolId][_addrs[i]] = _tickets;
-            }
+            whitelist[_poolId][_addrs[i]] += _tickets;
         }
     }
 

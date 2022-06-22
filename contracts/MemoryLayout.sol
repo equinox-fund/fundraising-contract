@@ -50,7 +50,7 @@ contract MemoryLayout is Ownable {
     /**
      * @notice In case of vesting, this ratio percentage is used to calculate the amount of tokens the user can redeem.
      */
-    uint8 public vestingRatioPercentage;
+    uint256 public vestingRatioPercentage;
 
     /**
      * @notice Addresse where funds are sent after withdraw
@@ -67,10 +67,5 @@ contract MemoryLayout is Ownable {
      * @notice Array containing all pool ids.
      */
 
-    uint8[] public poolIds;
-
-    /**
-     * Whitelist (poolId > address > number of tickets)
-     */
-    mapping(uint8 => mapping(address => uint8)) public whitelist;
+    uint256[] public poolIds;
 }

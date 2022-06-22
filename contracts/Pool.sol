@@ -1,7 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.15;
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "./MemoryLayout.sol";
+import "./Contract.sol";
 import "./Whitelist.sol";
 
 contract Pool is MemoryLayout, Whitelist {

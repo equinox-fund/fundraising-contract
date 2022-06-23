@@ -4,8 +4,9 @@ pragma solidity 0.8.9;
 import "./MemoryLayout.sol";
 import "./Buyer.sol";
 import "./Pool.sol";
+import "./Vault.sol";
 
-contract Contract is MemoryLayout, Pool, Buyer {
+contract Contract is MemoryLayout, Pool, Buyer, Vault {
     /// @notice Initialize fundraising contract
     /// @dev projectToken address can be zero because we can raise funds without any tokens for redemption.
     /// @param _paymentToken ERC20 token address used for funding, usually a stable token

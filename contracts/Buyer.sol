@@ -173,6 +173,10 @@ contract Buyer is MemoryLayout, BuyerAccess {
         buyers[_poolId][msg.sender].redeemed = true;
         buyers[_poolId][msg.sender].tokensRedeemable = 0;
 
+        // check balance
+        uint256 balance = IERC20(projectToken).balanceOf(address(this));
+        require(balance >= tokensRedeemable, "Insufficient tokens");
+
         // transfer
         IERC20(projectToken).safeTransfer(msg.sender, tokensRedeemable);
 

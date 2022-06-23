@@ -192,4 +192,54 @@ describe("Tests Buyer.sol", () => {
       expect(profilePool.redeemed).to.be.equals(false);
     });
   });
+
+  describe("REDEEM", () => {
+    it("should not be able to redeem because pool is still open nor allow for redeem", async () => {
+      const redeem = contract.connect(addr1).redeem(poolId);
+
+      await expect(redeem).to.be.revertedWith("You're not allowed to redeem");
+    });
+
+    it("should be able to redeem because no tokens", async () => {
+      // close pool and allow redeem
+      await contract.connect(owner).closePool(poolId);
+      await contract.connect(owner).allowPoolRedeem(poolId);
+
+      const redeem = contract.connect(addr1).redeem(poolId);
+
+      await expect(redeem).to.be.revertedWith("Insufficient tokens");
+    });
+
+    it("should be able to redeem", async () => {
+      // send some tokens
+      await projectTokenContract
+        .connect(owner)
+        .mintToWallet(contract.address, toBigNumber(10000));
+
+      const redeem = contract.connect(addr1).redeem(poolId);
+
+      /**
+       * 
+        event Redeemed(
+            address indexed user,
+            uint8 poolId,
+            uint256 tokensRedeemable
+        );
+       */
+
+      await expect(redeem)
+        .to.emit(contract, "Redeemed")
+        .withArgs(addr1.address, poolId, toBigNumber(1000));
+
+      // check balance
+      const balance = await projectTokenContract.balanceOf(addr1.address);
+      expect(balance).to.be.equals(toBigNumber(1000));
+
+      // check buyer
+      const buyer = await contract.buyers(poolId, addr1.address);
+      expect(buyer.redeemed).to.be.equals(true);
+      // because he redeemed
+      expect(buyer.tokensRedeemable).to.be.equals(0);
+    });
+  });
 });

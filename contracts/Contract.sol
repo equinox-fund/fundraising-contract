@@ -27,6 +27,19 @@ contract Contract is MemoryLayout, Pool, Buyer {
         withdrawFundsAddress = _withdrawFundsAddress;
     }
 
+    /// @notice Get all pools
+    /// @return VirtualPool[] Array of Pools
+    function getPools() public view returns (VirtualPool[] memory) {
+        uint256 nbrOfPools = poolIds.length;
+        VirtualPool[] memory pools = new VirtualPool[](nbrOfPools);
+
+        for (uint8 i = 0; i < nbrOfPools; i++) {
+            pools[i] = pools[poolIds[i]];
+        }
+
+        return pools;
+    }
+
     fallback() external {
         revert("Transaction reverted");
     }

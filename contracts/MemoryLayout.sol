@@ -41,8 +41,6 @@ struct VirtualBuyer {
     uint8 poolId;
     // is tokens has been redeem?
     bool redeemed;
-    // max allocation for the pool
-    uint256 maxAllocation;
     // current funded allocation
     uint256 allocation;
     uint256 tokensBought;

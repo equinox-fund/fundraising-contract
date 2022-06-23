@@ -4,6 +4,22 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "./MemoryLayout.sol";
 import "./BuyerAccess.sol";
 
+struct BuyerProfile {
+    // pool ID
+    uint8 poolId;
+    // is tokens has been redeem?
+    bool redeemed;
+    bool canAccess;
+    bool canBuy;
+    bool canRedeem;
+    // max allocation for the pool
+    uint256 maxAllocation;
+    // current funded allocation
+    uint256 allocation;
+    uint256 tokensBought;
+    uint256 tokensRedeemable;
+}
+
 contract Buyer is MemoryLayout, BuyerAccess {
     using SafeERC20 for IERC20;
     /**
@@ -190,10 +206,10 @@ contract Buyer is MemoryLayout, BuyerAccess {
     function getBuyerProfile(address _user)
         external
         view
-        returns (VirtualBuyer[] memory)
+        returns (BuyerProfile[] memory)
     {
         uint256 nbrOfPools = poolIds.length;
-        VirtualBuyer[] memory buyerProfile = new VirtualBuyer[](nbrOfPools);
+        BuyerProfile[] memory buyerProfile = new BuyerProfile[](nbrOfPools);
 
         for (uint8 i = 0; i < nbrOfPools; i++) {
             uint256 maxAllocation = getMaximumPaymentTokenAllocation(
@@ -201,13 +217,16 @@ contract Buyer is MemoryLayout, BuyerAccess {
                 poolIds[i]
             );
 
-            buyerProfile[i] = VirtualBuyer({
+            buyerProfile[i] = BuyerProfile({
                 poolId: poolIds[i],
+                redeemed: buyers[poolIds[i]][_user].redeemed,
+                canAccess: canAccess(_user, poolIds[i]),
+                canBuy: canBuy(_user, poolIds[i]),
+                canRedeem: canRedeem(_user, poolIds[i]),
                 maxAllocation: maxAllocation,
                 allocation: buyers[poolIds[i]][_user].allocation,
                 tokensBought: buyers[poolIds[i]][_user].tokensBought,
-                tokensRedeemable: buyers[poolIds[i]][_user].tokensRedeemable,
-                redeemed: buyers[poolIds[i]][_user].redeemed
+                tokensRedeemable: buyers[poolIds[i]][_user].tokensRedeemable
             });
         }
 

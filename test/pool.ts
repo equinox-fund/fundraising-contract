@@ -81,7 +81,7 @@ describe("Tests Pool.sol", () => {
         .connect(owner)
         .initializePool(poolId, 0, 0, 0, 0, 0);
 
-      await expect(initialize).to.revertedWith("Pool already initialized");
+      await expect(initialize).to.be.revertedWith("Pool already initialized");
     });
   });
 
@@ -90,7 +90,7 @@ describe("Tests Pool.sol", () => {
       const poolId = 1;
 
       const unpausing = contract.connect(owner).unPausePool(poolId);
-      await expect(unpausing).to.revertedWith("Pool not paused");
+      await expect(unpausing).to.be.revertedWith("Pool not paused");
     });
 
     it("Should be able to pause pool and then unpause", async () => {

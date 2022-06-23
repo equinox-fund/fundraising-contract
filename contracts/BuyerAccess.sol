@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity 0.8.15;
+pragma solidity 0.8.9;
 import "./MemoryLayout.sol";
 import "./Whitelist.sol";
 
@@ -7,17 +7,14 @@ contract BuyerAccess is MemoryLayout, Whitelist {
     /// @notice Check if the user can buy from a given pool
     /// @param _poolId Unique Identifier of the pool
     modifier isAllowedToBuy(uint8 _poolId) {
-        require(canBuy(msg.sender, _poolId), "You are not allowed to buy");
+        require(canBuy(msg.sender, _poolId), "You're not allowed to buy");
         _;
     }
 
     /// @notice Check if the user can redeem from a given pool
     /// @param _poolId Unique Identifier of the pool
     modifier isAllowedToRedeem(uint8 _poolId) {
-        require(
-            canRedeem(msg.sender, _poolId),
-            "You are not allowed to redeem"
-        );
+        require(canRedeem(msg.sender, _poolId), "You're not allowed to redeem");
         _;
     }
 

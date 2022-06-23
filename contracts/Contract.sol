@@ -1,10 +1,11 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.9;
 
-import "./Pool.sol";
 import "./MemoryLayout.sol";
+import "./Buyer.sol";
+import "./Pool.sol";
 
-contract Contract is MemoryLayout, Pool {
+contract Contract is MemoryLayout, Pool, Buyer {
     /// @notice Initialize fundraising contract
     /// @dev projectToken address can be zero because we can raise funds without any tokens for redemption.
     /// @param _paymentToken ERC20 token address used for funding, usually a stable token

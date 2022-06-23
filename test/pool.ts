@@ -120,17 +120,4 @@ describe("Tests Pool.sol", () => {
       expect((await contract.pools(poolId)).canRedeem).to.equals(true);
     });
   });
-
-  describe("Withraw unsold", () => {
-    it("Should be able to withdraw unsold tokens", async () => {
-      const poolId = 1;
-
-      // withdraw
-      await contract.connect(owner).withdrawPoolUnsoldProjectToken(poolId);
-      // check owner balance
-      const balance = await sampleERC20.balanceOf(owner.address);
-      // we expect the owner get back the unsold tokens
-      expect(balance).to.equals(toBigNumber(10000));
-    });
-  });
 });

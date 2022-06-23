@@ -58,8 +58,9 @@ describe("Tests Buyer.sol", () => {
     const startTime = dayjs().unix();
     // 100 dollars
     const paymentTokenAllocation = toBigNumber(100);
-    // 10000 tokens
-    const totalProjectToken = toBigNumber(10000);
+    // 5000 tokens
+    // we are putting 5000 tokens only
+    const totalProjectToken = toBigNumber(5000);
     // lets say the token cost 0.02 cent
     // solidity not support decimals, we set 2 as token price
     const projectTokenPrice = toBigNumber(2);
@@ -79,7 +80,116 @@ describe("Tests Buyer.sol", () => {
   });
 
   describe("BUY", () => {
-    it("should not be able to buy because does not have funds", () => {});
-    it("should not be able to buy because didnt give allowance for transfer", () => {});
+    it("should not be able to buy because sending 0 as allocation", async () => {
+      // whitelist user1 in pool 1 with two tickets
+      await contract
+        .connect(owner)
+        .whitelistAddresses([addr1.address], 2, poolId);
+
+      const buying = contract.connect(addr1).buy(0, poolId);
+      await expect(buying).to.be.revertedWith("Incorrect Allocation");
+    });
+
+    it("should not be able to buy because does not have funds", async () => {
+      // 100 dollars
+      const allocation = toBigNumber(100);
+      const buying = contract.connect(addr1).buy(allocation, poolId);
+
+      await expect(buying).to.be.revertedWith("Insufficient balance");
+    });
+
+    it("should not be able to buy because didnt give allowance for transfer", async () => {
+      // send some funds to the user
+      await paymentTokenContract
+        .connect(owner)
+        .mintToWallet(addr1.address, toBigNumber(1000));
+
+      // 100 dollars
+      const allocation = toBigNumber(100);
+      const buying = contract.connect(addr1).buy(allocation, poolId);
+
+      await expect(buying).to.be.revertedWith("You must approve transfer");
+    });
+
+    it("should not be able to buy because allocaton > maxAllocation", async () => {
+      // giving 1000$ allowance
+      await paymentTokenContract
+        .connect(addr1)
+        .approve(contract.address, toBigNumber(1000));
+      // 1000 dollars
+      const allocation = toBigNumber(1000);
+      const buying = contract.connect(addr1).buy(allocation, poolId);
+
+      await expect(buying).to.be.revertedWith("Max allocation excedeed");
+    });
+
+    it("should be able to buy", async () => {
+      // 100 dollars
+      const allocation = toBigNumber(100);
+      const buying = contract.connect(addr1).buy(allocation, poolId);
+
+      /**
+       * 100 dollars of allocation will give
+       * 100 / 0.02 = 5000 tokens
+       * BUT there is 20% vesting, you will receive only 1000 tokens for release
+       * (100 / 0.02) * 0.20 = 1000 tokens
+       */
+
+      /**
+       *  event Bought(
+          address indexed user,
+          uint8 poolId,
+          uint256 allocation,
+          uint256 tokensBought,
+          uint256 tokensRedeemable
+        );
+       */
+
+      await expect(buying)
+        .to.emit(contract, "Bought")
+        .withArgs(
+          addr1.address,
+          poolId,
+          allocation,
+          toBigNumber(5000),
+          toBigNumber(1000)
+        );
+    });
+
+    it("should not be able to buy anymore because no tokens in pool", async () => {
+      // 100 dollars
+      const allocation = toBigNumber(100);
+      const buying = contract.connect(addr1).buy(allocation, poolId);
+
+      await expect(buying).to.be.revertedWith("Pool soldout");
+    });
+
+    it("pool should be updated correctly", async () => {
+      const pool = await contract.pools(poolId);
+
+      // we raise 100 dollars
+      expect(pool.totalPaymentTokenRaised).to.be.equals(toBigNumber(100));
+      // we sold 5000 tokens
+      expect(pool.totalProjectTokenSold).to.be.equals(toBigNumber(5000));
+      // unsold tokens 0
+      expect(pool.totalProjectTokenUnsold).to.be.equals("0");
+    });
+
+    it("buyer profile should be correct", async () => {
+      const buyerProfile = await contract.getBuyerProfile(addr1.address);
+
+      const profilePool = buyerProfile[0];
+      expect(profilePool.poolId).to.be.equals(poolId);
+      // he had two tickets
+      expect(profilePool.maxAllocation).to.be.equals(toBigNumber(200));
+      // he spent 100
+      expect(profilePool.allocation).to.be.equals(toBigNumber(100));
+      // he bought 5000 tokens
+      expect(profilePool.tokensBought).to.be.equals(toBigNumber(5000));
+      // he can redeem 1000
+      expect(profilePool.tokensRedeemable).to.be.equals(toBigNumber(1000));
+      // he has not redeemed yet
+      expect(profilePool.redeemed).to.be.equals(false);
+    });
   });
 });

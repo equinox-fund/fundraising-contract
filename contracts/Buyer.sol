@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity 0.8.15;
+pragma solidity 0.8.9;
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "./MemoryLayout.sol";
 import "./BuyerAccess.sol";
@@ -31,6 +31,7 @@ contract Buyer is MemoryLayout, BuyerAccess {
     /// @param _allocation Allocation
     modifier isAllowedToTransferPaymentToken(uint256 _allocation) {
         require(_allocation > 0, "Incorrect Allocation");
+        require(_isSufficientBalance(_allocation), "Insufficient balance");
         require(
             IERC20(paymentToken).allowance(msg.sender, address(this)) >=
                 _allocation,
@@ -68,16 +69,16 @@ contract Buyer is MemoryLayout, BuyerAccess {
         return balance >= _allocation;
     }
 
-    /// @notice Check if there is tokens available with the amount of tokens the sender is purchasing
+    /// @notice Check if there is tokens available with the amount of tokens the user is purchasing
     /// @param _poolId Unique pool identifier
-    /// @param _tokensRedeemable Tokens the sender can redeem.
-    function _isTokensAvailable(uint8 _poolId, uint256 _tokensRedeemable)
+    /// @param _tokensBought Tokens the user bought
+    function _isTokensAvailable(uint8 _poolId, uint256 _tokensBought)
         private
         view
         returns (bool)
     {
         uint256 totalProjectTokenSold = pools[_poolId].totalProjectTokenSold +
-            _tokensRedeemable;
+            _tokensBought;
 
         return totalProjectTokenSold <= pools[_poolId].totalProjectToken;
     }
@@ -117,7 +118,7 @@ contract Buyer is MemoryLayout, BuyerAccess {
         // increase total tokens sold
         pools[_poolId].totalProjectTokenSold =
             pools[_poolId].totalProjectTokenSold +
-            _tokensRedeemable;
+            _tokensBought;
 
         // reduce total tokens unsold
         pools[_poolId].totalProjectTokenUnsold =
@@ -134,10 +135,6 @@ contract Buyer is MemoryLayout, BuyerAccess {
         isAllowedToTransferPaymentToken(_allocation)
     {
         require(
-            _isSufficientBalance(_allocation),
-            "Insufficient balance to buy"
-        );
-        require(
             _isAllocationAllow(_poolId, _allocation),
             "Max allocation excedeed"
         );
@@ -148,7 +145,7 @@ contract Buyer is MemoryLayout, BuyerAccess {
         uint256 tokensRedeemable = (tokensBought * vestingRatioPercentage) /
             100;
 
-        require(_isTokensAvailable(_poolId, tokensRedeemable), "Pool soldout");
+        require(_isTokensAvailable(_poolId, tokensBought), "Pool soldout");
 
         _beforeBuy(_poolId, _allocation, tokensBought, tokensRedeemable);
 

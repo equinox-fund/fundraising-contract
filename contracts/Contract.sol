@@ -1,5 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity 0.8.15;
+pragma solidity 0.8.9;
 
 import "./Pool.sol";
 import "./MemoryLayout.sol";
@@ -17,6 +17,9 @@ contract Contract is MemoryLayout, Pool {
         address _withdrawFundsAddress,
         uint256 _vestingRatioPercentage
     ) {
+        require(_paymentToken != address(0), "Can not use 0x0");
+        require(_withdrawFundsAddress != address(0), "Can not use 0x0");
+
         paymentToken = _paymentToken;
         projectToken = _projectToken;
         vestingRatioPercentage = _vestingRatioPercentage;

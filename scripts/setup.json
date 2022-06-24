@@ -1,0 +1,22 @@
+{
+  "paymentToken": {
+    "contractAddress": "",
+    "decimals": 18
+  },
+  "projectToken": {
+    "contractAddress": "",
+    "decimals": 18
+  },
+  "withdrawFundsAddress": "",
+  "vestingPercentage": 0,
+  "pools": [
+    {
+      "poolId": 1,
+      "openTime": "2022-01-01T00:00:00.000Z",
+      "totalProjectToken": 1000,
+      "paymentTokenAllocation": 100,
+      "tokenPrice": 1,
+      "tokensForPrice": 100
+    }
+  ]
+}

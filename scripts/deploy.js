@@ -38,13 +38,14 @@ async function main() {
     pools,
   } = setup;
 
+  console.log("Deploying contract...Please wait");
   // We get the contract to deploy
   const Contract = await ethers.getContractFactory("Contract");
   const contract = await Contract.deploy(
     paymentToken.contractAddress,
     projectToken.contractAddress,
-    vestingPercentage.toString(),
-    withdrawFundsAddress
+    withdrawFundsAddress,
+    vestingPercentage
   );
 
   await contract.deployed();

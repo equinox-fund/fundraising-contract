@@ -1,6 +1,7 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.9;
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./MemoryLayout.sol";
 import "./BuyerAccess.sol";
 
@@ -20,7 +21,7 @@ struct BuyerProfile {
     uint256 tokensRedeemable;
 }
 
-contract Buyer is MemoryLayout, BuyerAccess {
+contract Buyer is MemoryLayout, BuyerAccess, ReentrancyGuard {
     using SafeERC20 for IERC20;
     /**
      * @dev Emitted when a user bought tokens.
@@ -147,6 +148,7 @@ contract Buyer is MemoryLayout, BuyerAccess {
     /// @param _poolId Unique pool identifier
     function buy(uint256 _allocation, uint8 _poolId)
         external
+        nonReentrant
         isAllowedToBuy(_poolId)
         isAllowedToTransferPaymentToken(_allocation)
     {
@@ -183,7 +185,11 @@ contract Buyer is MemoryLayout, BuyerAccess {
 
     /// @notice Redeem tokens for a given pool
     /// @param _poolId Unique pool identifier
-    function redeem(uint8 _poolId) external isAllowedToRedeem(_poolId) {
+    function redeem(uint8 _poolId)
+        external
+        nonReentrant
+        isAllowedToRedeem(_poolId)
+    {
         uint256 tokensRedeemable = buyers[_poolId][msg.sender].tokensRedeemable;
         //reset
         buyers[_poolId][msg.sender].redeemed = true;

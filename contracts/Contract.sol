@@ -31,10 +31,10 @@ contract Contract is MemoryLayout, Pool, Buyer, Vault {
     /// @notice Get all pools
     /// @return VirtualPool[] Array of Pools
     function getPools() public view returns (VirtualPool[] memory) {
-        uint256 nbrOfPools = poolIds.length;
-        VirtualPool[] memory pools = new VirtualPool[](nbrOfPools);
+        uint256 numberOfPools = poolIds.length;
+        VirtualPool[] memory pools = new VirtualPool[](numberOfPools);
 
-        for (uint8 i = 0; i < nbrOfPools; i++) {
+        for (uint8 i = 0; i < numberOfPools; i++) {
             pools[i] = pools[poolIds[i]];
         }
 

@@ -2,7 +2,6 @@ import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import { Contract } from "ethers";
 import { ethers } from "hardhat";
-import dayjs from "dayjs";
 import { toBigNumber } from "./helpers";
 
 /**
@@ -58,8 +57,6 @@ describe("Tests Vault.sol", () => {
       contract.address,
       toBigNumber(1000)
     );
-
-    // send tokens
   });
 
   describe("Withdraw", () => {
@@ -76,6 +73,11 @@ describe("Tests Vault.sol", () => {
       await expect(withdraw)
         .to.be.emit(contract, "WithdrawnPaymentToken")
         .withArgs(toBigNumber(1000));
+
+      const balance = await paymentTokenContract.balanceOf(
+        withdrawFundsAddress
+      );
+      expect(balance).to.be.equals(toBigNumber(1000));
     });
   });
 });

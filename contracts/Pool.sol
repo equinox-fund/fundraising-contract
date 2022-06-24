@@ -1,10 +1,9 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.9;
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "./Whitelist.sol";
 
-contract Pool is MemoryLayout, Whitelist, ReentrancyGuard {
+contract Pool is MemoryLayout, Whitelist {
     using SafeERC20 for IERC20;
 
     /**
@@ -157,23 +156,5 @@ contract Pool is MemoryLayout, Whitelist, ReentrancyGuard {
         pools[_poolId].canRedeem = true;
 
         emit PoolRedeemAllowed(_poolId);
-    }
-
-    /// @notice Withdraw tokens for a given pool
-    /// @dev only if pool is closed and we have project token address
-    /// @param _poolId Unique Identifier of the pool
-    function withdrawPoolUnsoldProjectToken(uint8 _poolId)
-        external
-        onlyOwner
-        nonReentrant
-        whenPoolIsClosed(_poolId)
-    {
-        require(projectToken != address(0), "No Project Token address");
-
-        uint256 unsold = pools[_poolId].totalProjectTokenUnsold;
-        // transfer to the ownert
-        IERC20(projectToken).safeTransfer(owner(), unsold);
-
-        emit WithdrawnPoolUnsoldProjectToken(unsold, _poolId);
     }
 }

@@ -36,6 +36,17 @@ struct VirtualPoolPrice {
     uint256 projectTokenForPrice;
 }
 
+struct VirtualBuyer {
+    // pool ID
+    uint8 poolId;
+    // is tokens has been redeem?
+    bool redeemed;
+    // current funded allocation
+    uint256 allocation;
+    uint256 tokensBought;
+    uint256 tokensRedeemable;
+}
+
 contract MemoryLayout is Ownable {
     /**
      * @notice define the project token used for the fundraising
@@ -67,5 +78,10 @@ contract MemoryLayout is Ownable {
      * @notice Array containing all pool ids.
      */
 
-    uint256[] public poolIds;
+    uint8[] public poolIds;
+
+    /**
+     * @notice Buyers (poolId > address > VirtualBuyer data)
+     */
+    mapping(uint256 => mapping(address => VirtualBuyer)) public buyers;
 }

@@ -1,10 +1,12 @@
 //SPDX-License-Identifier: MIT
 pragma solidity 0.8.9;
 
-import "./Pool.sol";
 import "./MemoryLayout.sol";
+import "./Buyer.sol";
+import "./Pool.sol";
+import "./Vault.sol";
 
-contract Contract is MemoryLayout, Pool {
+contract Contract is MemoryLayout, Pool, Buyer, Vault {
     /// @notice Initialize fundraising contract
     /// @dev projectToken address can be zero because we can raise funds without any tokens for redemption.
     /// @param _paymentToken ERC20 token address used for funding, usually a stable token
@@ -24,6 +26,19 @@ contract Contract is MemoryLayout, Pool {
         projectToken = _projectToken;
         vestingRatioPercentage = _vestingRatioPercentage;
         withdrawFundsAddress = _withdrawFundsAddress;
+    }
+
+    /// @notice Get all pools
+    /// @return VirtualPool[] Array of Pools
+    function getPools() public view returns (VirtualPool[] memory) {
+        uint256 numberOfPools = poolIds.length;
+        VirtualPool[] memory pools = new VirtualPool[](numberOfPools);
+
+        for (uint8 i = 0; i < numberOfPools; i++) {
+            pools[i] = pools[poolIds[i]];
+        }
+
+        return pools;
     }
 
     fallback() external {

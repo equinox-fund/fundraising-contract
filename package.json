@@ -1,5 +1,16 @@
 {
   "name": "fundraising-contract",
+  "scripts": {
+    "test": "hardhat test",
+    "deploy:bsc:mainnet": "hardhat run scripts/deploy.js --network bscMainnet",
+    "deploy:bsc:testnet": "hardhat run scripts/deploy.js --network bscTestnet",
+    "deploy:eth:mainnet": "hardhat run scripts/deploy.js --network ethMainnet",
+    "deploy:eth:testnet": "hardhat run scripts/deploy.js --network ethTestnet",
+    "deploy:matic:mainnet": "hardhat run scripts/deploy.js --network maticMainnet",
+    "deploy:matic:testnet": "hardhat run scripts/deploy.js --network maticTestnet",
+    "deploy:avax:mainnet": "hardhat run scripts/deploy.js --network avaxMainnet",
+    "deploy:avax:testnet": "hardhat run scripts/deploy.js --network avaxTestnet"
+  },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.6",
     "@nomiclabs/hardhat-etherscan": "^3.1.0",
@@ -33,5 +44,8 @@
     "ts-node": "^10.8.1",
     "typechain": "^5.2.0",
     "typescript": "^4.7.3"
+  },
+  "engines": {
+    "node": ">=16.0.0"
   }
 }

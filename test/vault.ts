@@ -29,13 +29,13 @@ describe("Tests Vault.sol", () => {
     const projectTokenContractFactory = await ethers.getContractFactory(
       "SampleERC20"
     );
-    projectTokenContract = await projectTokenContractFactory.deploy(18);
+    projectTokenContract = await projectTokenContractFactory.deploy();
 
     // deploy payment token contract
     const paymentTokenContractFactory = await ethers.getContractFactory(
       "SampleERC20"
     );
-    paymentTokenContract = await paymentTokenContractFactory.deploy(18);
+    paymentTokenContract = await paymentTokenContractFactory.deploy();
 
     const paymentToken = paymentTokenContract.address;
     const projectToken = projectTokenContract.address;
@@ -77,6 +77,7 @@ describe("Tests Vault.sol", () => {
       const balance = await paymentTokenContract.balanceOf(
         withdrawFundsAddress
       );
+
       expect(balance).to.be.equals(toBigNumber(1000));
     });
   });

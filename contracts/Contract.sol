@@ -32,16 +32,12 @@ contract Contract is MemoryLayout, Pool, Buyer, Vault {
     /// @return VirtualPool[] Array of Pools
     function getPools() public view returns (VirtualPool[] memory) {
         uint256 numberOfPools = poolIds.length;
-        VirtualPool[] memory pools = new VirtualPool[](numberOfPools);
+        VirtualPool[] memory virtualPools = new VirtualPool[](numberOfPools);
 
         for (uint8 i = 0; i < numberOfPools; i++) {
-            pools[i] = pools[poolIds[i]];
+            virtualPools[i] = pools[poolIds[i]];
         }
 
-        return pools;
-    }
-
-    fallback() external {
-        revert("Transaction reverted");
+        return virtualPools;
     }
 }

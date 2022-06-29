@@ -22,26 +22,23 @@ describe("Tests Buyer.sol", () => {
 
   let owner: SignerWithAddress;
   let addr1: SignerWithAddress;
-  let addr2: SignerWithAddress;
-  let addr3: SignerWithAddress;
-  let addr4: SignerWithAddress;
 
   // deploy contract and add pool
   before(async () => {
     const Contract = await ethers.getContractFactory("Contract");
-    [owner, addr1, addr2, addr3, addr4] = await ethers.getSigners();
+    [owner, addr1] = await ethers.getSigners();
 
     // deploy project token contract
     const projectTokenContractFactory = await ethers.getContractFactory(
       "SampleERC20"
     );
-    projectTokenContract = await projectTokenContractFactory.deploy(18);
+    projectTokenContract = await projectTokenContractFactory.deploy();
 
     // deploy payment token contract
     const paymentTokenContractFactory = await ethers.getContractFactory(
       "SampleERC20"
     );
-    paymentTokenContract = await paymentTokenContractFactory.deploy(18);
+    paymentTokenContract = await paymentTokenContractFactory.deploy();
 
     const paymentToken = paymentTokenContract.address;
     const projectToken = projectTokenContract.address;

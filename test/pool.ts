@@ -23,7 +23,7 @@ describe("Tests Pool.sol", () => {
     // we need set a token address and deploy a ERC20 sample
     // deploy, assuming 18 decimals
     const factory = await ethers.getContractFactory("SampleERC20");
-    sampleERC20 = await factory.deploy(18);
+    sampleERC20 = await factory.deploy();
 
     const Contract = await ethers.getContractFactory("Contract");
     [owner] = await ethers.getSigners();

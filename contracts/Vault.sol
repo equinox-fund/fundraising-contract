@@ -32,7 +32,6 @@ contract Vault is MemoryLayout, ReentrancyGuard {
         uint256 total = IERC20(paymentToken).balanceOf(address(this));
 
         IERC20(paymentToken).safeTransfer(withdrawFundsAddress, total);
-
         emit WithdrawnPaymentToken(total);
     }
 }

@@ -1,6 +1,6 @@
 {
   "remappings": [
-    "@openzeppelin/contracts/token/=./node_modules/@openzeppelin/contracts/token"
+    "@openzeppelin/contracts/=/code/node_modules/@openzeppelin/contracts/"
   ],
   "optimizer": {
     "enabled": true

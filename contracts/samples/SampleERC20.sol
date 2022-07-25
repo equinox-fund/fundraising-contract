@@ -18,7 +18,7 @@ contract SampleERC20 is ERC20, Ownable {
         _mint(_address, _amount);
     }
 
-    function decimals() public view virtual override returns (uint8) {
-        return newDecimals;
-    }
+    // function decimals() public view virtual override returns (uint8) {
+    //     return newDecimals;
+    // }
 }

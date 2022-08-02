@@ -3,6 +3,7 @@ import { expect } from "chai";
 import { Contract } from "ethers";
 import { ethers } from "hardhat";
 import dayjs from "dayjs";
+// eslint-disable-next-line node/no-missing-import
 import { toBigNumber } from "./helpers";
 
 /**
@@ -22,14 +23,14 @@ describe("Tests Buyer.sol", () => {
 
   let owner: SignerWithAddress;
   let addr1: SignerWithAddress;
-  let addr2: SignerWithAddress;
-  let addr3: SignerWithAddress;
-  let addr4: SignerWithAddress;
+  // let addr2: SignerWithAddress;
+  // let addr3: SignerWithAddress;
+  // let addr4: SignerWithAddress;
 
   // deploy contract and add pool
   before(async () => {
     const Contract = await ethers.getContractFactory("Contract");
-    [owner, addr1, addr2, addr3, addr4] = await ethers.getSigners();
+    [owner, addr1] = await ethers.getSigners();
 
     // deploy project token contract
     const projectTokenContractFactory = await ethers.getContractFactory(

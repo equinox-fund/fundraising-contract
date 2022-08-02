@@ -1,6 +1,12 @@
 # Fundraising Contract
 
-Solidity contract for IDO / INO / IGO ..
+A complete Solidity contract for IDO (initial dex offering) / INO (initial NFT offering) / IGO (initial game offering), and so on. This repo contains the new (under-dev) version of our funding-raising contract.
+
+## At a glance
+
+![flowchart](./assets/flowchart.png)
+
+## Features
 
 ✔️ Multi-pool  
 ✔️ Whitelist per pool  
@@ -18,8 +24,8 @@ Rename `.env.example` to `.env` and add your private key for your favorite block
 
 ### hardhat.config.ts
 
-We've already added public node urls for Binance Smart Chain and Polygon.
-We recommend using Moralis to get a free node and deploy on Ethereum or Avalanche. Please see [here](https://docs.moralis.io/speedy-nodes/connecting-to-rpc-nodes/connect-to-eth-node).
+We've already added public node URLs for Binance Smart Chain and Polygon.
+We recommend using Moralis to get a free node and deploy it on Ethereum or Avalanche. Please see [here](https://docs.moralis.io/speedy-nodes/connecting-to-rpc-nodes/connect-to-eth-node).
 
 ## Contract configuration
 
@@ -54,23 +60,23 @@ Set up your contract configuration with `setup.json` located in `scripts` folder
 
 ### paymentToken
 
-paymentToken is the stablecoin you wish to use for your fundraising. Fill the correct contract address and number of decimals this ERC20 contract supports.
+paymentToken is the stablecoin you wish to use for your fundraising. Fill in the correct contract address and the number of decimals this contract supports ERC20.
 
 ### projectToken
 
-projectToken is the token you wish to raise funds for. Fill the correct contract address and number of decimals this ERC20 contract supports.
+projectToken is the token you wish to raise funds for. Fill the correct contract address and the number of decimals this ERC20 contract supports.
 
 If the token does not exist yet, you can simply put `0x0000000000000000000000000000000000000000` address and use the same number of decimals as paymentToken
 
 ### withdrawFundsAddress
 
-Should be the address where funds are sent after the fundraising.
+This should be the address where funds are sent after the fundraising.
 
-For security purpose, we are not sending funds to the owner. If the private key of the owner get comprised, funds will be safe. Of course, we recommend to use a different address than the owner address.
+For security purposes, we are not sending funds to the owner. If the owner's private key gets comprised, funds will be safe. Of course, we recommend using a different address than the owner's address.
 
 ### vestingPercentage
 
-vestingPercentage is use to calculate the amount of tokens bought the buyer is allow to receive after the fundraising through the `redeem` feature.
+vestingPercentage is use to calculate the number of tokens bought the buyer is allowed to receive after the fundraising through the `redeem` feature.
 
 For example, let's say vestingPercentage = 20%.
 
@@ -81,17 +87,17 @@ Put "100" if the buyer can receive all of his tokens.
 
 #### poolId
 
-must be the unique identifier of your pool.
+Must be the unique identifier of your pool.
 
 #### openTime
 
-must be the time when open the pool. it should be using the DateTime Format. (YYY-MM-DDTHH:mm:ss.sssZ)
+Must be the time when open the pool. it should be using the DateTime Format. (YYY-MM-DDTHH:mm:ss.sssZ)
 
 #### totalProjectToken
 
-must be the number of tokens available to purchase.
+Must be the number of tokens available to purchase.
 
-**Do not take in consideration the vesting. The full purchasable amount must be indicate**
+**Do not take into consideration the vesting. The full purchasable amount must be indicated**
 
 #### tokenPrice
 
@@ -131,7 +137,7 @@ npm run deploy:matic:testnet
 
 ## Whitelist
 
-This fundraising contract works with a whitelist, your users must be on the whitelist to access the fundraising.
+This fundraising contract works with a whitelist. Your users must be on the whitelist to access the fundraising.
 
 You must be calling the `whitelistAddresses` from your favorite UI (Defender, Remix, ..) or custom script.
 
@@ -149,7 +155,7 @@ Example:
 whitelistAddresses(['0x70A78123250635DD66b081D029B5e65F8c5EDB42'], 1, 1);
 ```
 
-The number of tickets will be multiply by the `paymentTokenAllocation` and the result will be the maximum allocation the user can fund.
+The number of tickets will be multiplied by the `paymentTokenAllocation` and the result will be the maximum allocation the user can fund.
 
 This contract has a `multiple buy feature`, meaning the user can send multiple `buy` transactions until he reaches his max allocation.
 
@@ -169,6 +175,26 @@ copy the deployment address and paste it in to replace `DEPLOYED_CONTRACT_ADDRES
 npx hardhat verify --network bscMainnet DEPLOYED_CONTRACT_ADDRESS
 ```
 
-## Performance optimizations
+## Testing
 
-For faster runs of your tests and scripts, consider skipping ts-node's type checking by setting the environment variable `TS_NODE_TRANSPILE_ONLY` to `1` in hardhat's environment. For more details see [the documentation](https://hardhat.org/guides/typescript.html#performance-optimizations).
+to run tests run
+
+```shell
+npx hardhat test
+```
+
+![testing](./assets/tests.png)
+
+to get coverage run
+
+```
+npx hardhat coverage
+```
+
+![coverage](./assets/coverage.png)
+
+## Security
+
+This new contract is not officially audited and verified; however, we considered taking best security practices and used vetted libs like openzeppelin whenever possible. We tested our smart contract using the most actively developed related tools, namely Mythril and Slither, which reported zero security issues.
+
+please contact **security [at] equinox.fund** if you believe you've found a security vulnerability.
